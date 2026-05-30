@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="每日打卡">
+<title>每日打卡</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; background: #f2f2f7; min-height: 100vh; padding-bottom: 40px; }
+.app { max-width: 390px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+.header { margin-bottom: 1.5rem; }
+.header h1 { font-size: 28px; font-weight: 700; color: #000; }
+.date-badge { display: inline-block; padding: 4px 10px; background: #e5e5ea; border-radius: 8px; font-size: 13px; color: #6e6e73; margin-top: 6px; }
+.section-title { font-size: 13px; font-weight: 600; color: #6e6e73; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.5rem 0 0.75rem; }
+.check-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: #fff; border-radius: 14px; margin-bottom: 10px; cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
+.check-item:active { transform: scale(0.97); }
+.check-item.checked { background: #e1f5ee; }
+.check-left { display: flex; align-items: center; gap: 12px; }
+.check-icon { font-size: 22px; color: #8e8e93; }
+.check-item.checked .check-icon { color: #1D9E75; }
+.check-label { font-size: 16px; color: #000; }
+.check-item.checked .check-label { color: #0F6E56; font-weight: 500; }
+.check-box { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #c7c7cc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+.check-item.checked .check-box { background: #1D9E75; border-color: #1D9E75; }
+.check-box i { font-size: 15px; color: white; display: none; }
+.check-item.checked .check-box i { display: block; }
+.notes-area { width: 100%; padding: 14px 16px; background: #fff; border: none; border-radius: 14px; font-size: 16px; color: #000; font-family: -apple-system, sans-serif; resize: none; margin-top: 0.5rem; outline: none; }
+.notes-area::placeholder { color: #c7c7cc; }
+.submit-btn { width: 100%; padding: 18px; background: #1D9E75; color: white; border: none; border-radius: 14px; font-size: 17px; font-weight: 600; margin-top: 2rem; cursor: pointer; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+.submit-btn:active { background: #0F6E56; transform: scale(0.98); }
+.submit-btn:disabled { background: #c7c7cc; }
+.result { display: none; text-align: center; padding: 4rem 1rem 2rem; }
+.result-icon { font-size: 64px; color: #1D9E75; }
+.result h2 { font-size: 24px; font-weight: 700; margin-top: 1rem; color: #000; }
+.result p { font-size: 16px; color: #6e6e73; margin-top: 0.5rem; line-height: 1.5; }
+.result button { margin-top: 2rem; padding: 14px 28px; background: #f2f2f7; border: none; border-radius: 14px; font-size: 16px; color: #000; cursor: pointer; font-family: -apple-system, sans-serif; }
+</style>
+</head>
+<body>
+<div class="app" id="main">
+  <div class="header">
+    <h1>今日打卡</h1>
+    <span class="date-badge" id="today-date"></span>
+  </div>
+
+  <div class="section-title">🏃 运动</div>
+
+  <div class="check-item" data-key="exercise_20min" onclick="toggle(this)">
+    <div class="check-left">
+      <i class="ti ti-flame check-icon"></i>
+      <span class="check-label">运动 20 分钟以上</span>
+    </div>
+    <div class="check-box"><i class="ti ti-check"></i></div>
+  </div>
+
+  <div class="check-item" data-key="diet_change" onclick="toggle(this)">
+    <div class="check-left">
+      <i class="ti ti-salad check-icon"></i>
+      <span class="check-label">改变饮食结构</span>
+    </div>
+    <div class="check-box"><i class="ti ti-check"></i></div>
+  </div>
+
+  <div class="check-item" data-key="no_processed_food" onclick="toggle(this)">
+    <div class="check-left">
+      <i class="ti ti-leaf check-icon"></i>
+      <span class="check-label">不吃 / 少吃精加工食物</span>
+    </div>
+    <div class="check-box"><i class="ti ti-check"></i></div>
+  </div>
+
+  <div class="check-item" data-key="stretching" onclick="toggle(this)">
+    <div class="check-left">
+      <i class="ti ti-walk check-icon"></i>
+      <span class="check-label">拉伸</span>
+    </div>
+    <div class="check-box"><i class="ti ti-check"></i></div>
+  </div>
+
+  <div class="section-title">📝 备注</div>
+  <textarea class="notes-area" id="notes" rows="3" placeholder="今天有什么想记录的..."></textarea>
+
+  <button class="submit-btn" onclick="submitCheckin()" id="submit-btn">提交今日打卡</button>
+</div>
+
+<div class="result" id="result">
+  <div class="result-icon">✅</div>
+  <h2>打卡成功！</h2>
+  <p id="result-msg"></p>
+  <button onclick="resetForm()">重新打卡</button>
+</div>
+
+<script>
+const WEBHOOK = 'https://yylllisa.zeabur.app/webhook/habit-checkin';
+
+const d = new Date();
+document.getElementById('today-date').textContent = d.toLocaleDateString('zh-CN', {year:'numeric', month:'long', day:'numeric', weekday:'short'});
+
+function toggle(el) {
+  el.classList.toggle('checked');
+}
+
+async function submitCheckin() {
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = '提交中...';
+  const items = document.querySelectorAll('.check-item');
+  const data = { notes: document.getElementById('notes').value };
+  items.forEach(item => { data[item.dataset.key] = item.classList.contains('checked'); });
+  try {
+    await fetch(WEBHOOK, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+    const checked = [...items].filter(i => i.classList.contains('checked')).length;
+    document.getElementById('main').style.display = 'none';
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result-msg').textContent = '今天完成了 ' + checked + ' / ' + items.length + ' 项，继续加油！';
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '提交今日打卡';
+    alert('提交失败，请检查网络');
+  }
+}
+
+function resetForm() {
+  document.getElementById('main').style.display = 'block';
+  document.getElementById('result').style.display = 'none';
+  document.querySelectorAll('.check-item').forEach(i => i.classList.remove('checked'));
+  document.getElementById('notes').value = '';
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = false;
+  btn.textContent = '提交今日打卡';
+}
+</script>
+</body>
+</html>
