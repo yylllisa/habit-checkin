@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="每日打卡">
+<title>每日打卡</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;background:#f2f2f7;min-height:100vh}
+.app{max-width:390px;margin:0 auto;padding:1.25rem 1rem 5rem}
+.header h1{font-size:26px;font-weight:700;color:#000}
+.date-badge{display:inline-block;padding:3px 10px;background:#e5e5ea;border-radius:8px;font-size:12px;color:#6e6e73;margin-top:5px}
+.tabs{display:flex;background:#e5e5ea;border-radius:10px;padding:2px;margin:1rem 0;gap:2px}
+.tab{flex:1;text-align:center;padding:7px 2px;font-size:12px;font-weight:500;color:#6e6e73;border-radius:8px;cursor:pointer;transition:all .2s}
+.tab.active{background:#fff;color:#000}
+.page{display:none}.page.active{display:block}
+.sec-title{font-size:11px;font-weight:600;color:#6e6e73;text-transform:uppercase;letter-spacing:.06em;margin:1.25rem 0 .5rem}
+.ci{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;background:#fff;border-radius:14px;margin-bottom:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s}
+.ci:active{transform:scale(.97)}
+.ci.s{background:#E1F5EE}.ci.h{background:#E6F1FB}.ci.b{background:#EEEDFE}.ci.l{background:#FAEEDA}
+.cl{display:flex;align-items:center;gap:10px}
+.ci-icon{font-size:18px;color:#8e8e93}
+.ci.s .ci-icon{color:#0F6E56}.ci.h .ci-icon{color:#185FA5}.ci.b .ci-icon{color:#3C3489}.ci.l .ci-icon{color:#633806}
+.ci-label{font-size:14px;color:#000}
+.ci-sub{font-size:11px;color:#8e8e93;margin-top:1px}
+.ci.s .ci-label{color:#085041;font-weight:500}.ci.h .ci-label{color:#0C447C;font-weight:500}.ci.b .ci-label{color:#26215C;font-weight:500}.ci.l .ci-label{color:#412402;font-weight:500}
+.cb{width:24px;height:24px;border-radius:50%;border:1.5px solid #c7c7cc;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.ci.s .cb{background:#1D9E75;border-color:#1D9E75}.ci.h .cb{background:#185FA5;border-color:#185FA5}.ci.b .cb{background:#534AB7;border-color:#534AB7}.ci.l .cb{background:#BA7517;border-color:#BA7517}
+.cb i{font-size:13px;color:white;display:none}
+.ci.s .cb i,.ci.h .cb i,.ci.b .cb i,.ci.l .cb i{display:block}
+.fl{font-size:12px;color:#6e6e73;margin-bottom:4px;padding-left:2px}
+textarea{width:100%;padding:10px 12px;background:#fff;border:none;border-radius:14px;font-size:14px;color:#000;font-family:inherit;resize:none;outline:none;margin-bottom:8px}
+textarea::placeholder{color:#c7c7cc}
+.sub-btn{width:100%;padding:16px;background:#1D9E75;color:white;border:none;border-radius:14px;font-size:16px;font-weight:600;margin-top:1.5rem;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.sub-btn:active{background:#0F6E56;transform:scale(.98)}
+.sub-btn:disabled{background:#c7c7cc}
+.done{display:none;text-align:center;padding:3rem 1rem 2rem}
+.done h2{font-size:22px;font-weight:700;margin-top:1rem;color:#000}
+.done p{font-size:14px;color:#6e6e73;margin-top:.5rem}
+.done button{margin-top:2rem;padding:12px 24px;background:#f2f2f7;border:none;border-radius:14px;font-size:14px;color:#000;cursor:pointer;font-family:inherit}
+.sc{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.sn{font-size:13px;color:#000}
+.sb{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
+.bx{background:#E1F5EE;color:#085041}.bo{background:#FAEEDA;color:#412402}.bh{background:#FCEBEB;color:#501313}.bn{background:#e5e5ea;color:#6e6e73}
+.pb{height:5px;background:#e5e5ea;border-radius:3px;overflow:hidden}
+.pf{height:100%;border-radius:3px;transition:width .5s}
+.fx{background:#1D9E75}.fo{background:#EF9F27}.fh{background:#E24B4A}.fn{background:#c7c7cc}
+.sp{font-size:11px;color:#6e6e73;margin-top:4px}
+.ss{font-size:11px;font-weight:600;color:#6e6e73;text-transform:uppercase;letter-spacing:.06em;margin:1.25rem 0 .5rem}
+.ld{text-align:center;padding:2rem;color:#6e6e73;font-size:14px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>每日打卡</h1>
+    <span class="date-badge" id="dt"></span>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="sw('checkin')">打卡</div>
+    <div class="tab" onclick="sw('stats')">本周统计</div>
+  </div>
+
+  <div class="page active" id="page-checkin">
+    <div id="form">
+      <div class="sec-title">🏃 运动</div>
+      <div class="ci" data-k="exercise_20min" data-t="s" onclick="tg(this)"><div class="cl"><i class="ti ti-flame ci-icon"></i><div><div class="ci-label">运动 20 分钟以上</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+      <div class="ci" data-k="diet_change" data-t="s" onclick="tg(this)"><div class="cl"><i class="ti ti-salad ci-icon"></i><div><div class="ci-label">改变饮食结构</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+      <div class="ci" data-k="no_processed_food" data-t="s" onclick="tg(this)"><div class="cl"><i class="ti ti-leaf ci-icon"></i><div><div class="ci-label">不吃 / 少吃精加工食物</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+      <div class="ci" data-k="stretching" data-t="s" onclick="tg(this)"><div class="cl"><i class="ti ti-walk ci-icon"></i><div><div class="ci-label">拉伸</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+
+      <div class="sec-title">🪥 卫生</div>
+      <div class="ci" data-k="clean_tongue" data-t="h" onclick="tg(this)"><div class="cl"><i class="ti ti-mouth ci-icon"></i><div><div class="ci-label">清理舌苔</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+      <div class="ci" data-k="floss" data-t="h" onclick="tg(this)"><div class="cl"><i class="ti ti-dental ci-icon"></i><div><div class="ci-label">饭后使用牙线</div><div class="ci-sub">统计按每周3次计算</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+      <div class="ci" data-k="no_heavy_food" data-t="h" onclick="tg(this)"><div class="cl"><i class="ti ti-salt ci-icon"></i><div><div class="ci-label">不吃重口味食物</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+      <div class="ci" data-k="gallbladder_tap" data-t="h" onclick="tg(this)"><div class="cl"><i class="ti ti-hand-tap ci-icon"></i><div><div class="ci-label">敲胆经</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+      <div class="ci" data-k="belly_massage" data-t="h" onclick="tg(this)"><div class="cl"><i class="ti ti-ripple ci-icon"></i><div><div class="ci-label">揉腹</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+
+      <div class="sec-title">💼 事业</div>
+      <div class="ci" data-k="made_change" data-t="b" onclick="tg(this)"><div class="cl"><i class="ti ti-trending-up ci-icon"></i><div><div class="ci-label">今天有做出改变吗？</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+      <div class="fl">今天做了什么促进销量的事？</div>
+      <textarea id="sales_action" rows="2" placeholder="写下今天的行动..."></textarea>
+      <div class="fl">改变特别有帮助的一步是什么？</div>
+      <textarea id="best_change" rows="2" placeholder="最有价值的那一步..."></textarea>
+
+      <div class="sec-title">📋 工作</div>
+      <div class="fl">今天我学会了什么？</div>
+      <textarea id="learned_today" rows="2" placeholder="今天的收获..."></textarea>
+      <div class="fl">我如何去做得更好？</div>
+      <textarea id="do_better" rows="2" placeholder="改进的方向..."></textarea>
+
+      <div class="sec-title">🎓 学习</div>
+      <div class="ci" data-k="english_song" data-t="l" onclick="tg(this)"><div class="cl"><i class="ti ti-music ci-icon"></i><div><div class="ci-label">练习英文歌 10 分钟</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+      <div class="ci" data-k="reading_15min" data-t="l" onclick="tg(this)"><div class="cl"><i class="ti ti-book ci-icon"></i><div><div class="ci-label">阅读 15 分钟</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+      <div id="sun-item" style="display:none">
+        <div class="ci" data-k="song_learned" data-t="l" onclick="tg(this)"><div class="cl"><i class="ti ti-star ci-icon"></i><div><div class="ci-label">这星期的英文歌学会了吗？</div><div class="ci-sub">每周日出现</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+      </div>
+      <div id="bw-item" style="display:none">
+        <div class="ci" data-k="book_finished" data-t="l" onclick="tg(this)"><div class="cl"><i class="ti ti-book-2 ci-icon"></i><div><div class="ci-label">这两周读完一本书了吗？</div><div class="ci-sub">每两周出现</div></div></div><div class="cb"><i class="ti ti-check"></i></div></div>
+      </div>
+
+      <div class="sec-title">📝 备注</div>
+      <textarea id="notes" rows="2" placeholder="今天有什么想记录的..."></textarea>
+      <button class="sub-btn" onclick="sub()" id="sbtn">提交今日打卡</button>
+    </div>
+    <div class="done" id="done">
+      <div style="font-size:56px">✅</div>
+      <h2>打卡成功！</h2>
+      <p id="dmsg"></p>
+      <button onclick="rst()">重新打卡</button>
+    </div>
+  </div>
+
+  <div class="page" id="page-stats">
+    <div class="ld" id="sld">加载中...</div>
+    <div id="sct" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+const WEBHOOK='https://yylllisa.zeabur.app/webhook/habit-checkin';
+const N8N_API='https://yylllisa.zeabur.app/api/v1/tables/RKqHQPHgXgdTUNsR/rows';
+const API_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZjJjOTZiYS1jYWE1LTRkY2EtODNmMS1hYThiZjBlYmZlNDAiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiYWFjZmUxODUtOWJlMS00ODYxLWJjZjQtMDkxZDY5NDM1ZTBjIiwiaWF0IjoxNzgwMTIzMjcxfQ.2dIE0RZcpycxItMoBL_y78zt9yLx7aSyb3OubelBJEU';
+
+const d=new Date();
+document.getElementById('dt').textContent=d.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
+if(d.getDay()===0)document.getElementById('sun-item').style.display='block';
+function gwn(){const now=new Date(),dn=now.getUTCDay()||7,d2=new Date(now);d2.setUTCDate(d2.getUTCDate()+4-dn);const ys=new Date(Date.UTC(d2.getUTCFullYear(),0,1));return Math.ceil((((d2-ys)/86400000)+1)/7);}
+if(gwn()%2===0)document.getElementById('bw-item').style.display='block';
+function gws(){const wn=gwn(),now=new Date(),dn=now.getUTCDay()||7,d2=new Date(now);d2.setUTCDate(d2.getUTCDate()+4-dn);return `${d2.getUTCFullYear()}-W${String(wn).padStart(2,'0')}`;}
+function sw(t){document.querySelectorAll('.tab').forEach((x,i)=>x.classList.toggle('active',(i===0&&t==='checkin')||(i===1&&t==='stats')));document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+t).classList.add('active');if(t==='stats')ls();}
+function tg(el){if(el.classList.contains(el.dataset.t))el.classList.remove(el.dataset.t);else el.classList.add(el.dataset.t);}
+async function sub(){
+  const btn=document.getElementById('sbtn');btn.disabled=true;btn.textContent='提交中...';
+  const items=document.querySelectorAll('.ci');
+  const data={sales_action:document.getElementById('sales_action').value,best_change:document.getElementById('best_change').value,learned_today:document.getElementById('learned_today').value,do_better:document.getElementById('do_better').value,notes:document.getElementById('notes').value};
+  items.forEach(it=>data[it.dataset.k]=it.classList.contains(it.dataset.t));
+  try{
+    await fetch(WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    const checked=[...items].filter(i=>i.classList.contains(i.dataset.t)).length;
+    document.getElementById('form').style.display='none';
+    document.getElementById('done').style.display='block';
+    document.getElementById('dmsg').textContent='今天完成了 '+checked+' 项打勾，继续加油！';
+  }catch(e){btn.disabled=false;btn.textContent='提交今日打卡';alert('提交失败，请检查网络');}
+}
+function rst(){document.getElementById('form').style.display='block';document.getElementById('done').style.display='none';document.querySelectorAll('.ci').forEach(i=>i.classList.remove('s','h','b','l'));['sales_action','best_change','learned_today','do_better','notes'].forEach(id=>document.getElementById(id).value='');const btn=document.getElementById('sbtn');btn.disabled=false;btn.textContent='提交今日打卡';}
+const SI=[
+  {k:'exercise_20min',lb:'运动20分钟以上',cat:'🏃 运动',tot:7},
+  {k:'diet_change',lb:'改变饮食结构',cat:'🏃 运动',tot:7},
+  {k:'no_processed_food',lb:'不吃/少吃精加工',cat:'🏃 运动',tot:7},
+  {k:'stretching',lb:'拉伸',cat:'🏃 运动',tot:7},
+  {k:'clean_tongue',lb:'清理舌苔',cat:'🪥 卫生',tot:7},
+  {k:'floss',lb:'饭后使用牙线',cat:'🪥 卫生',tot:3},
+  {k:'no_heavy_food',lb:'不吃重口味食物',cat:'🪥 卫生',tot:7},
+  {k:'gallbladder_tap',lb:'敲胆经',cat:'🪥 卫生',tot:7},
+  {k:'belly_massage',lb:'揉腹',cat:'🪥 卫生',tot:7},
+  {k:'made_change',lb:'做出改变',cat:'💼 事业',tot:7},
+  {k:'english_song',lb:'练习英文歌',cat:'🎓 学习',tot:7},
+  {k:'reading_15min',lb:'阅读15分钟',cat:'🎓 学习',tot:7},
+];
+async function ls(){
+  document.getElementById('sld').style.display='block';document.getElementById('sct').style.display='none';
+  try{
+    const week=gws();
+    const res=await fetch(N8N_API+'?limit=7',{headers:{'X-N8N-API-KEY':API_KEY}});
+    const json=await res.json();
+    const rows=(json.data||[]).filter(r=>r.week===week);
+    let html=`<div style="font-size:12px;color:#6e6e73;margin-bottom:1rem">本周 ${week}，已记录 ${rows.length} 天</div>`;
+    let lc='';
+    SI.forEach(item=>{
+      if(item.cat!==lc){html+=`<div class="ss">${item.cat}</div>`;lc=item.cat;}
+      const cnt=rows.filter(r=>r[item.k]).length;
+      const pct=Math.round(cnt/item.tot*100);
+      let bc,fc,msg;
+      if(rows.length===0){bc='bn';fc='fn';msg='还没有记录';}
+      else if(pct>=90){bc='bx';fc='fx';msg='优秀！特别棒 🎉';}
+      else if(pct>=60){bc='bo';fc='fo';msg='有待加强 💪';}
+      else if(pct>=20){bc='bh';fc='fh';msg='遇到困难了吗？';}
+      else{bc='bh';fc='fh';msg='需要关注 🔔';}
+      html+=`<div class="sc"><div class="sh"><span class="sn">${item.lb}</span><span class="sb ${bc}">${msg}</span></div><div class="pb"><div class="pf ${fc}" style="width:${Math.min(pct,100)}%"></div></div><div class="sp">${cnt}/${item.tot} · ${pct}%</div></div>`;
+    });
+    document.getElementById('sct').innerHTML=html;
+    document.getElementById('sld').style.display='none';
+    document.getElementById('sct').style.display='block';
+  }catch(e){document.getElementById('sld').textContent='加载失败，请稍后再试';}
+}
+</script>
+</body>
+</html>
